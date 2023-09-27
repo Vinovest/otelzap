@@ -1,5 +1,5 @@
 // Deprecated: Use the "github.com/agoda-com/opentelemetry-go/otelzap" module instead.
-module github.com/agoda-com/otelzap
+module github.com/vinovest/otelzap
 
 go 1.20
 
