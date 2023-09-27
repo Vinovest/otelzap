@@ -84,7 +84,11 @@ func (c *otlpCore) Write(ent zapcore.Entry, fields []zapcore.Field) error {
 	}
 	// add zap log fields as attributes
 	for _, s := range fields {
-		attributes = append(attributes, otelAttribute(s)...)
+		if s.Key == "spanContext" {
+			spanCtx = s.Interface.(*trace.SpanContext)
+		} else {
+			attributes = append(attributes, otelAttribute(s)...)
+		}
 	}
 
 	if ent.Level > zapcore.InfoLevel {
