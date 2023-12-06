@@ -17,11 +17,13 @@ limitations under the License.
 package otelzap
 
 import (
+	"encoding/json"
+	"math"
+
 	otel "github.com/agoda-com/opentelemetry-logs-go/logs"
 	"go.opentelemetry.io/otel/attribute"
 	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	"go.uber.org/zap/zapcore"
-	"math"
 )
 
 // otelLevel zap level to otlp level converter
@@ -82,6 +84,12 @@ func otelAttribute(f zapcore.Field) []attribute.KeyValue {
 		return []attribute.KeyValue{}
 	case zapcore.SkipType:
 		return []attribute.KeyValue{}
+	case zapcore.ReflectType:
+		value, err := json.Marshal(f.Interface)
+		if err != nil {
+			return []attribute.KeyValue{semconv.ExceptionMessage(err.Error())}
+		}
+		return []attribute.KeyValue{attribute.String(f.Key, string(value))}
 	}
 	// unhandled types will be treated as string
 	return []attribute.KeyValue{attribute.String(f.Key, f.String)}
