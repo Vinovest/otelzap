@@ -42,8 +42,9 @@ var instrumentationScope = instrumentation.Scope{
 	SchemaURL: semconv.SchemaURL,
 }
 
-func (otlpCore) Enabled(zapcore.Level) bool {
-	return true
+func (otlpCore) Enabled(level zapcore.Level) bool {
+	// upstream didn't implement level check, and I'm being lazy. Just going to set what I need here
+	return level >= zapcore.InfoLevel
 }
 
 func (c *otlpCore) With(f []zapcore.Field) zapcore.Core {
